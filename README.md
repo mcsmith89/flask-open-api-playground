@@ -1,0 +1,1 @@
+This is a simple project to play around with Flask and OpenAPI, learning from RealPython's blog series. 
