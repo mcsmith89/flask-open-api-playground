@@ -7,7 +7,9 @@ def queryDB(query):
     try:
         connection = sqlite3.connect("database.db")
         cursor = connection.cursor()
-        return(cursor.execute(query))
+        queryResult = cursor.execute(query)
+        connection.commit()
+        connection.close()
     except:
         print(f"Error {query}")
     
@@ -34,7 +36,7 @@ def create(person):
         ("{lname}", "{fname}", DATE("now"));
     '''
     try:
-        queryDB(createPlayer).execute()
+        queryDB(createPlayer)
         return(200)
     except:
         abort(
