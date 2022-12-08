@@ -3,15 +3,23 @@ from flask import abort
 import sqlite3
 
 #SQLite connection
-def queryDB(query):
-    try:
-        connection = sqlite3.connect("database.db")
-        cursor = connection.cursor()
-        queryResult = cursor.execute(query)
-        connection.commit()
-        connection.close()
-    except:
-        print(f"Error {query}")
+def queryDB(query, type):
+    if type == "post":
+        try:
+            connection = sqlite3.connect("database.db")
+            cursor = connection.cursor()
+            queryResult = cursor.execute(query)
+            connection.commit()
+            connection.close()
+        except:
+            print(f"Error {query}")
+    if type == "get":
+        try:
+            connection = sqlite3.connect("database.db")
+            cursor = connection.cursor()
+            return(cursor.execute(query))
+        except:
+            print(f"Error {query}")
     
 
 #Get methods/endpoint functions
@@ -21,7 +29,7 @@ def get_timestamp():
 def read_all():
     players = {}
     queryAllPLayers = f"SELECT * FROM players;"
-    for player in queryDB(queryAllPLayers).fetchall():
+    for player in queryDB(queryAllPLayers, "get").fetchall():
         players.update({player[1]:{"fname":player[0], "lname":player[1], "created":player[2]}})
     return(list(players.values()))
 
@@ -36,7 +44,7 @@ def create(person):
         ("{lname}", "{fname}", DATE("now"));
     '''
     try:
-        queryDB(createPlayer)
+        queryDB(createPlayer, "post")
         return(200)
     except:
         abort(
